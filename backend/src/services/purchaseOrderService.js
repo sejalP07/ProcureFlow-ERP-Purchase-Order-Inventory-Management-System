@@ -47,12 +47,66 @@ const createPurchaseOrder = (vendorId, items) => {
 
 // Get All Purchase Orders
 const getAllPurchaseOrders = () => {
-  return purchaseOrders;
+  return purchaseOrders.map((po) => {
+    const vendor = vendors.find(
+      (v) => v.id === po.vendorId
+    );
+
+    return {
+  ...po,
+  vendorName: vendor
+    ? vendor.name
+    : "Unknown Vendor",
+
+  items: po.items.map((item) => {
+    const product = products.find(
+      (p) => p.id === item.productId
+    );
+
+    return {
+      ...item,
+      productName: product
+        ? product.name
+        : "Unknown Product",
+    };
+  }),
+};
+  });
 };
 
 // Get Purchase Order By ID
 const getPurchaseOrderById = (id) => {
-  return purchaseOrders.find((po) => po.id === Number(id));
+  const po = purchaseOrders.find(
+    (po) => po.id === Number(id)
+  );
+
+  if (!po) {
+    return null;
+  }
+
+  const vendor = vendors.find(
+    (v) => v.id === po.vendorId
+  );
+
+  return {
+  ...po,
+  vendorName: vendor
+    ? vendor.name
+    : "Unknown Vendor",
+
+  items: po.items.map((item) => {
+    const product = products.find(
+      (p) => p.id === item.productId
+    );
+
+    return {
+      ...item,
+      productName: product
+        ? product.name
+        : "Unknown Product",
+    };
+  }),
+};
 };
 // Approve Purchase Order
 const approvePurchaseOrder = (id, role) => {
@@ -65,7 +119,7 @@ const approvePurchaseOrder = (id, role) => {
   if (po.status !== "draft") {
     throw new AppError(
       `Only draft purchase orders can be approved. Current status: ${po.status}`,
-      400
+      409
     );
   }
 
@@ -76,10 +130,11 @@ const approvePurchaseOrder = (id, role) => {
   );
 
   if (total > 50000 && role !== "manager") {
-    throw new AppError(
-      "Manager approval required for purchase orders above ₹50,000."
-    );
-  }
+  throw new AppError(
+    "Manager approval required for purchase orders above ₹50,000.",
+    403
+  );
+}
 
   po.status = "approved";
 
@@ -91,20 +146,23 @@ const receivePurchaseOrder = (id) => {
   const po = purchaseOrders.find((po) => po.id === Number(id));
 
   if (!po) {
-    throw new AppError("Purchase Order not found.");
+    throw new AppError(
+    "Purchase Order not found.",
+    404
+  );
   }
 
-  if (po.status === "draft") {
-    throw new AppError(
-      "Purchase Order must be approved before receiving.",
-      400
-    );
+  if (po.status !== "approved") {
+  throw new AppError(
+    `Only approved purchase orders can be received. Current status: ${po.status}`,
+     409
+   );
   }
 
   if (po.status === "received") {
     throw new AppError(
       "Purchase Order has already been received.",
-      400
+      409
     );
   }
 
