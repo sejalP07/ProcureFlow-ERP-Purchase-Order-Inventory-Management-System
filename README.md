@@ -1,54 +1,19 @@
 # ProcureFlow ERP
 
-A lightweight ERP Procurement & Inventory Management application built for the **SimpleGrid Software Development Intern Assignment**.
+ProcureFlow ERP is a lightweight full-stack procurement and inventory management application built for the **SimpleGrid Software Development Intern Assignment**.
 
-The application demonstrates a complete purchase order workflow where users can create purchase orders, approve them, receive goods, and automatically update inventory.
-
----
-
-## Features
-
-### Purchase Orders
-
-* Create Purchase Orders
-* Add multiple line items
-* Automatic total calculation
-* View all Purchase Orders
-* View Purchase Order details
-* Approve Purchase Orders
-* Receive Purchase Orders
-
-### Inventory
-
-* View current inventory
-* Automatic stock update after receiving goods
-* Inventory dashboard with product statistics
-
-### Business Rules
-
-* Purchase Order total is calculated on the server.
-* Purchase Orders follow the lifecycle:
-
-```
-Draft → Approved → Received
-```
-
-* Only **Draft** Purchase Orders can be approved.
-* Only **Approved** Purchase Orders can be received.
-* Receiving a Purchase Order updates inventory.
-* Duplicate receiving is prevented.
-* Purchase Orders above **₹50,000** require manager approval.
+The application implements a complete Purchase Order workflow where users can create, approve, and receive purchase orders while automatically updating inventory.
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-## Backend
+### Backend
 
 * Node.js
 * Express.js
 
-## Frontend
+### Frontend
 
 * React
 * Vite
@@ -56,83 +21,49 @@ Draft → Approved → Received
 * Axios
 * React Hot Toast
 
-## Storage
+### Storage
 
-* In-memory JavaScript Arrays (No Database)
+* In-memory JavaScript arrays (No database)
 
 ---
 
-# Project Structure
+## Project Structure
 
-```
-ProcureFlow
+```text
+ProcureFlow/
 │
-├── backend
-│   ├── src
-│   │   ├── controllers
-│   │   ├── data
-│   │   ├── middleware
-│   │   ├── routes
-│   │   ├── services
-│   │   ├── utils
-│   │   ├── app.js
-│   │   └── server.js
-│   └── package.json
-│
-├── frontend
-│   ├── src
-│   │   ├── components
-│   │   ├── pages
-│   │   ├── services
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   └── package.json
-│
+├── backend/
+├── frontend/
 └── README.md
 ```
 
 ---
 
-# Installation
+## How to Run
 
-## Clone Repository
-
-```bash
-git clone <repository-url>
-cd ProcureFlow
-```
-
----
-
-## Backend Setup
+### Backend
 
 ```bash
 cd backend
-
 npm install
-
 npm run dev
 ```
 
-Backend runs on
+Backend runs at:
 
 ```
 http://localhost:5000
 ```
 
----
-
-## Frontend Setup
+### Frontend
 
 ```bash
 cd frontend
-
 npm install
-
 npm run dev
 ```
 
-Frontend runs on
+Frontend runs at:
 
 ```
 http://localhost:5173
@@ -140,111 +71,95 @@ http://localhost:5173
 
 ---
 
-# API Endpoints
+## Features
 
-| Method | Endpoint                           | Description               |
-| ------ | ---------------------------------- | ------------------------- |
-| GET    | `/api/products`                    | Get all products          |
-| GET    | `/api/vendors`                     | Get all vendors           |
-| GET    | `/api/purchase-orders`             | Get all purchase orders   |
-| GET    | `/api/purchase-orders/:id`         | Get single purchase order |
-| POST   | `/api/purchase-orders`             | Create purchase order     |
-| POST   | `/api/purchase-orders/:id/approve` | Approve purchase order    |
-| POST   | `/api/purchase-orders/:id/receive` | Receive purchase order    |
+* View Products and Inventory
+* View Vendors
+* Create Purchase Orders
+* Approve Purchase Orders
+* Receive Purchase Orders
+* Automatic Inventory Updates
+* Manager approval for Purchase Orders above ₹50,000
+* Centralized Error Handling
+* Request Validation
 
 ---
 
-# Application Workflow
+## Business Rules
+
+* Purchase Order total is calculated on the server.
+* Purchase Orders follow the workflow:
 
 ```
-Create Purchase Order
-        │
-        ▼
-      Draft
-        │
-        ▼
-     Approve
-        │
-        ▼
-    Approved
-        │
-        ▼
- Receive Goods
-        │
-        ▼
-Inventory Updated
-        │
-        ▼
-    Received
+Draft → Approved → Received
 ```
 
----
-
-# Design Decisions
-
-* Used a layered architecture:
-
-  * Routes
-  * Controllers
-  * Services
-  * Middleware
-* Business logic is separated from controllers.
-* Implemented centralized error handling for consistent API responses.
-* Added request validation middleware to validate incoming data.
-* Used in-memory storage as required by the assignment instead of a database.
-* React components are modular and reusable to improve maintainability.
+* Only Draft Purchase Orders can be approved.
+* Only Approved Purchase Orders can be received.
+* Receiving a Purchase Order updates inventory.
+* Duplicate receive operations are prevented.
+* Purchase Orders above ₹50,000 require manager approval.
 
 ---
 
-# Error Handling
+## Design Decisions
 
-The application handles common invalid scenarios gracefully:
-
-* Invalid Vendor
-* Invalid Product
-* Invalid Quantity
-* Invalid Unit Price
-* Purchase Order Not Found
-* Approving a non-draft Purchase Order
-* Receiving a non-approved Purchase Order
-* Receiving an already received Purchase Order
-* Manager approval required for Purchase Orders above ₹50,000
+* Followed a layered architecture (**Routes → Controllers → Services → Middleware**) to keep API handling, business logic, and validation separate.
+* Implemented business rules in the service layer so they are enforced regardless of how the API is accessed.
+* Used centralized error handling to provide consistent API responses.
+* Used reusable React components to keep the frontend modular and maintainable.
+* Stored all data in memory, as required by the assignment.
 
 ---
 
-# AI Usage
+## Trade-offs
 
-AI tools were used to accelerate development by generating boilerplate code, suggesting component structures, and improving the UI.
+* Used in-memory storage instead of a database because the assignment explicitly required it. This means all data is reset when the server restarts.
+* Manual testing was performed instead of automated tests due to the assignment scope and time constraints.
 
-All AI-generated code was carefully reviewed, tested, and modified before being integrated into the project.
+---
 
-Examples of improvements made after reviewing AI suggestions:
+## Testing
 
-* Refactored business logic into a dedicated service layer.
+The application was manually tested using **Postman** and the **React frontend**.
+
+The following scenarios were verified:
+
+* ✅ View Products and Inventory
+* ✅ View Vendors
+* ✅ Create Purchase Order
+* ✅ View Purchase Orders
+* ✅ Approve Purchase Order
+* ✅ Receive Purchase Order
+* ✅ Inventory updates after receiving goods
+* ✅ Prevent approving non-draft Purchase Orders
+* ✅ Prevent receiving non-approved Purchase Orders
+* ✅ Prevent duplicate receive operations
+* ✅ Manager approval rule for Purchase Orders above ₹50,000
+* ✅ Request validation for invalid vendor, product, quantity, and unit price
+* ✅ Error messages displayed correctly in the UI
+
+---
+
+## AI Usage
+
+AI tools were used to speed up development by generating initial boilerplate code, suggesting project structure, and improving UI components.
+
+All AI-generated code was reviewed, tested, and modified before being integrated into the project.
+
+Examples of changes made after reviewing AI suggestions:
+
+* Refactored the backend into a layered architecture (Controllers, Services, Middleware).
 * Implemented centralized error handling using a custom `AppError` class.
+* Added request validation middleware.
 * Improved API response consistency.
-* Fixed React component structure and state management issues.
-* Enhanced UI with reusable components and loading/error states.
+* Fixed React component issues and state management bugs.
+* Enhanced the UI with loading states, toast notifications, and reusable components.
 
 ---
 
-# Future Improvements
-
-* Database integration (PostgreSQL/MySQL)
-* JWT Authentication
-* Role-based Access Control
-* Search and Filtering
-* Pagination
-* Dashboard Analytics
-* Docker Deployment
-* Unit and Integration Testing
-
----
-
-# Author
+## Author
 
 **Sejal P**
-
-Software Engineering Intern Candidate
 
 Built as part of the **SimpleGrid Software Development Intern Assignment**.
